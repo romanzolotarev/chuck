@@ -33,7 +33,7 @@ export const Login = () => {
       {loggedIn ? (
         <>
           <p>
-            You have logged in as <span class="b">{username}</span>
+            You have logged in as <span className="b">{username}</span>
           </p>
           <button
             onClick={() => logIn(false)}
@@ -65,7 +65,7 @@ export const Login = () => {
 
 const LabeledInput = ({ type, id, label, value, onChange }) => (
   <>
-    <label className="db f7 sans-serif mb2" for={id}>
+    <label className="db f7 sans-serif mb2" htmlFor={id}>
       {label}
     </label>
     <input
