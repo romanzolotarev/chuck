@@ -6,6 +6,7 @@ import React, {
   createContext,
   useContext
 } from 'react'
+
 import {
   reducer,
   FETCH,
@@ -17,6 +18,7 @@ import {
   STOP_AUTO_FETCH,
   initialState
 } from './reducer'
+import './index.css'
 
 const fetchApi = async (url, cb) => {
   const response = await fetch(url)
@@ -104,7 +106,7 @@ const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
   }, [state.favorites, state.jokes])
 
   return (
-    <>
+    <div className="center mw6 w-100 cf">
       <StateDispatch.Provider
         value={{
           state,
@@ -117,65 +119,110 @@ const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
         <RandomJokes />
         <FavoriteJokes />
       </StateDispatch.Provider>
-    </>
+    </div>
   )
 }
 
 const RandomJokes = () => {
-  const { state, dispatch, randomLimit, favoriteLimit } = useContext(
-    StateDispatch
-  )
+  const { state, dispatch, favoriteLimit } = useContext(StateDispatch)
   return (
-    <>
+    <div className="w-50 fl">
       <h2>random jokes</h2>
-      <button disabled={state.shouldFetch} onClick={() => dispatch([FETCH])}>
-        fetch {randomLimit} jokes
-      </button>
+      <FetchButton />
       <div>
         {state.jokes.map(x => {
           const action = x.favorite
             ? [UNLIKE, x]
             : [LIKE, { joke: x, limit: favoriteLimit }]
           return (
-            <div onClick={() => dispatch(action)} key={x.id}>
+            <div
+              className="pa2 bg-white b--gray mb3 pointer"
+              onClick={() => dispatch(action)}
+              key={x.id}
+            >
               {x.joke}
+              <LikeButton x={x} />
             </div>
           )
         })}
       </div>
-    </>
+    </div>
   )
 }
 
 const FavoriteJokes = () => {
-  const { state, dispatch, favoriteLimit, autoFetchInterval } = useContext(
-    StateDispatch
+  const { state, dispatch, favoriteLimit } = useContext(StateDispatch)
+  return (
+    <div className="w-50 fl">
+      <div className="pl2">
+        <h2>top {favoriteLimit} of favorites</h2>
+        <AutoFetchButtons />
+        <div>
+          {state.favorites.map(x => (
+            <div
+              className="pa2 bg-white b--gray mb3 pointer"
+              onClick={() => dispatch([UNLIKE, x])}
+              key={x.id}
+            >
+              {x.joke}
+              <LikeButton x={x} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   )
+}
+
+const FetchButton = () => {
+  const { state, dispatch, randomLimit } = useContext(StateDispatch)
+  return (
+    <button
+      className={
+        'mb3 bw0 pa2 ' +
+        (state.shouldFetch ? 'bg-gray black' : 'bg-black white')
+      }
+      disabled={state.shouldFetch}
+      onClick={() => dispatch([FETCH])}
+    >
+      fetch {randomLimit} jokes
+    </button>
+  )
+}
+
+const AutoFetchButtons = () => {
+  const { state, dispatch, autoFetchInterval } = useContext(StateDispatch)
   return (
     <>
-      <h2>top {favoriteLimit} of favorites</h2>
       <button
+        className={
+          'mb3 bw0 pa2 ' +
+          (state.shouldAutoFetch ? 'bg-gray black' : 'bg-black white')
+        }
         disabled={state.shouldAutoFetch}
         onClick={() => dispatch([START_AUTO_FETCH])}
       >
         fetch one every {Math.floor(autoFetchInterval / 1000)} seconds
       </button>
       <button
+        className={
+          'mb3 bw0 pa2 ' +
+          (!state.shouldAutoFetch ? 'bg-gray black' : 'bg-black white')
+        }
         disabled={!state.shouldAutoFetch}
         onClick={() => dispatch([STOP_AUTO_FETCH])}
       >
         stop
       </button>
-      <div>
-        {state.favorites.map(x => (
-          <div onClick={() => dispatch([UNLIKE, x])} key={x.id}>
-            {x.joke}
-          </div>
-        ))}
-      </div>
     </>
   )
 }
+
+const LikeButton = ({ x }) => (
+  <button className="f7 sans-serif pv1 dib bw0 bg-white db outline-0">
+    {x.favorite ? <>&#x2605; unlike</> : <>&#x2606; like</>}
+  </button>
+)
 
 render(
   <App

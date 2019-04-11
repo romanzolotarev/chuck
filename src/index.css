@@ -1,0 +1,84 @@
+html {
+  font-size: 20px;
+  background-color: #f4f4f4;
+  color: #333;
+}
+.pv1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.pr2 {
+  padding-right: 0.5rem;
+}
+.pl2 {
+  padding-left: 0.5rem;
+}
+.pa2 {
+  padding: 0.5rem;
+}
+.bg-white {
+  background-color: #fff;
+}
+.sans-serif {
+  font-family: 'Noto Sans', sans-serif;
+}
+.serif {
+  font-family: 'Noto Serif', Georgia, Times, serif;
+}
+.w-100 {
+  width: 100%;
+}
+.w-50 {
+  width: 50%;
+}
+.center {
+  margin-right: auto;
+  margin-left: auto;
+}
+.cf {
+  *zoom: 1;
+}
+.cf:after {
+  clear: both;
+}
+.cf:before,
+.cf:after {
+  content: ' ';
+  display: table;
+}
+.fl {
+  float: left;
+}
+.bg-black {
+  background-color: #000;
+}
+.black {
+  color: #000;
+}
+.white {
+  color: #fff;
+}
+.bw0 {
+  border-width: 0;
+}
+.b--gray {
+  border: solid 1px #888;
+}
+.mb3 {
+  margin-bottom: 1rem;
+}
+.f7 {
+  font-size: 0.75rem;
+}
+.mw6 {
+  max-width: 32rem;
+}
+.mb3 {
+  margin-bottom: 1rem;
+}
+.db {
+  display: block;
+}
+.outline-0 {
+  outline: 0;
+}
