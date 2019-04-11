@@ -6,7 +6,8 @@ import {
   FETCH,
   START_AUTO_FETCH,
   STOP_AUTO_FETCH,
-  UPDATE_JOKES
+  UPDATE_JOKES,
+  UPDATE_FAVORITES
 } from '../reducer.js'
 
 describe('reducer', () => {
@@ -66,6 +67,19 @@ describe('reducer', () => {
     expect(reducer(initialState, [UPDATE_JOKES, [joke]])).toEqual({
       favorites: [],
       jokes: [{ id: 1, joke: 'a' }],
+      shouldFetch: false,
+      shouldAutoFetch: false
+    })
+  })
+
+  it('UPDATE_FAVORITES', () => {
+    const favorites = [
+      { id: 2, joke: 'b', favorite: true },
+      { id: 3, joke: 'c', favorite: true }
+    ]
+    expect(reducer(initialState, [UPDATE_FAVORITES, favorites])).toEqual({
+      favorites,
+      jokes: [],
       shouldFetch: false,
       shouldAutoFetch: false
     })

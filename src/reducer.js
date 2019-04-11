@@ -2,6 +2,7 @@ export const LIKE = 'LIKE'
 export const UNLIKE = 'UNLIKE'
 export const FETCH = 'FETCH'
 export const UPDATE_JOKES = 'UPDATE_JOKES'
+export const UPDATE_FAVORITES = 'UPDATE_FAVORITES'
 export const START_AUTO_FETCH = 'START_AUTO_FETCH'
 export const STOP_AUTO_FETCH = 'STOP_AUTO_FETCH'
 
@@ -40,6 +41,9 @@ export const reducer = (state, [actionType, payload]) => {
 
     case UPDATE_JOKES:
       return { ...state, jokes: payload, shouldFetch: false }
+
+    case UPDATE_FAVORITES:
+      return { ...state, favorites: payload }
 
     case FETCH:
       return { ...state, shouldFetch: true }

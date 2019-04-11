@@ -4,13 +4,13 @@ import React, {
   useReducer,
   useRef,
   createContext,
-  useContext,
-  useMemo
+  useContext
 } from 'react'
 import {
   reducer,
   FETCH,
   UPDATE_JOKES,
+  UPDATE_FAVORITES,
   LIKE,
   UNLIKE,
   START_AUTO_FETCH,
@@ -75,19 +75,45 @@ const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
     if (state.favorites.length >= favoriteLimit) dispatch([STOP_AUTO_FETCH])
   }, [state.favorites])
 
-  const value = useMemo(
-    () => ({
-      state,
-      dispatch,
-      randomLimit,
-      favoriteLimit,
-      autoFetchInterval
-    }),
-    [state, dispatch, randomLimit, favoriteLimit, autoFetchInterval]
-  )
+  //
+  //
+  // Store favorites and jokes in localStorage
+  //
+  const storage = useRef(null)
+  useEffect(() => {
+    //
+    // Set an item into localStorage
+    const setItem = (key, json) => {
+      const value = JSON.stringify(json)
+      value && storage.current.setItem(key, value)
+    }
+    //
+    // Get an item from localStorage
+    const getItem = (key, type) => {
+      const payload = JSON.parse(storage.current.getItem(key))
+      payload && dispatch([type, payload])
+    }
+
+    if (storage.current === null) {
+      storage.current = window.localStorage
+      getItem('favorites', UPDATE_FAVORITES)
+      getItem('jokes', UPDATE_JOKES)
+    }
+    setItem('favorites', state.favorites)
+    setItem('jokes', state.jokes)
+  }, [state.favorites, state.jokes])
+
   return (
     <>
-      <StateDispatch.Provider value={value}>
+      <StateDispatch.Provider
+        value={{
+          state,
+          dispatch,
+          randomLimit,
+          favoriteLimit,
+          autoFetchInterval
+        }}
+      >
         <RandomJokes />
         <FavoriteJokes />
       </StateDispatch.Provider>
