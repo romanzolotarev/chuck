@@ -7,9 +7,46 @@ This is a [React] app, written in ES6, HTML, and vanilla CSS
 ([Tachyons]' naming convention).
 
 The app fetches jokes and let you like/unlike them. The state survives
-page reload.
+page reload. It also has a log in form with some pattern matching for
+a password.
 
-## init
+**[Demo](https://www.youtube-nocookie.com/embed/aPosqjMGcTg?controls=0)**
+
+## Dependencies
+
+    production:
+      react 16.8.6, react-dom 16.8.6
+
+    developement:
+      node 8+, react-scripts 2+
+
+## Files
+
+    ./src/index.js    the entry point
+    ./src/__tests__   tests
+    ./public          static HTML file
+
+## Usage
+
+Build this react app
+
+    cd /tmp
+    git clone https://github.com/romanzolotarev/chuck
+    cd chuck
+    npm install
+    npm start
+
+## Uninstall
+
+    cd /tmp
+    rm -rf chuck
+
+## DIY
+
+This app has been written with zero boilerplates. If you want to try it
+yourself to write it from scratch create new React app and checkout my
+initial commit.
+
 
 	echo '{
 	  "name": "chuck",
@@ -35,3 +72,19 @@ page reload.
 	echo '<div id="root" />' > public/index.html
 	echo "console.log('ok')" > src/index.js
 	npm start
+
+## License
+
+    Copyright 2019 Roman Zolotarev <hi@romanzolotarev.com>
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted, provided that the above
+    copyright notice and this permission notice appear in all copies.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+    WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+    MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+    ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
