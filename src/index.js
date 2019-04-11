@@ -1,5 +1,13 @@
 import { render } from 'react-dom'
 import React, { useEffect, useReducer } from 'react'
+import {
+  reducer,
+  FETCH,
+  UPDATE_JOKES,
+  LIKE,
+  UNLIKE,
+  initialState
+} from './reducer'
 
 const fetchApi = async (url, cb) => {
   const response = await fetch(url)
@@ -8,40 +16,35 @@ const fetchApi = async (url, cb) => {
   cb(json.value)
 }
 
-const FETCH = 'FETCH'
-const UPDATE_JOKES = 'UPDATE_JOKES'
-
-const reducer = (state, { type, payload }) => {
-  switch (type) {
-    case UPDATE_JOKES:
-      return { ...state, jokes: payload, shouldFetch: false }
-    case FETCH:
-      return { ...state, shouldFetch: true }
-    default:
-      return state
-  }
-}
-
 const App = ({ url }) => {
-  const initialState = { jokes: [], shouldFetch: false }
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
-    if (state.shouldFetch)
-      fetchApi(url, x => dispatch({ type: UPDATE_JOKES, payload: x }))
+    if (state.shouldFetch) fetchApi(url, x => dispatch([UPDATE_JOKES, x]))
   }, [url, state.shouldFetch])
 
   return (
     <>
-      <button
-        disabled={state.shouldFetch}
-        onClick={() => dispatch({ type: FETCH })}
-      >
+      <h2>random jokes</h2>
+      <button disabled={state.shouldFetch} onClick={() => dispatch([FETCH])}>
         fetch ten jokes
       </button>
       <div>
-        {state.jokes.map(x => (
-          <div key={x.id}>{x.joke}</div>
+        {state.jokes.map(x => {
+          const type = x.favorite ? UNLIKE : LIKE
+          return (
+            <div onClick={() => dispatch([type, x])} key={x.id}>
+              {x.joke}
+            </div>
+          )
+        })}
+      </div>
+      <h2>top ten of favorites</h2>
+      <div>
+        {state.favorites.map(x => (
+          <div onClick={() => dispatch([UNLIKE, x])} key={x.id}>
+            {x.joke}
+          </div>
         ))}
       </div>
     </>
