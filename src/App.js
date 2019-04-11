@@ -17,7 +17,6 @@ import {
   STOP_AUTO_FETCH,
   initialState
 } from './reducer'
-import './index.css'
 
 const fetchApi = async (url, cb) => {
   const response = await fetch(url)
