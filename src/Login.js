@@ -25,6 +25,7 @@ export const Login = () => {
   const [loggedIn, logIn] = useState(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
   const usernameInput = {
     id: 'username',
     label: 'Username',
@@ -40,6 +41,8 @@ export const Login = () => {
     onChange: setPassword
   }
 
+  const isPasswordValid = validator(password)
+
   return (
     <div className="center mb4 w-100 mw6 mb3 mt3">
       {loggedIn ? (
@@ -49,26 +52,39 @@ export const Login = () => {
           </p>
           <button
             onClick={() => logIn(false)}
-            className="bw0 bg-gray black pa2"
+            className="bw0 pa2 bg-black white"
           >
             log out
           </button>
         </>
       ) : (
         <form
+          action="#"
           onSubmit={e => {
             e.preventDefault()
-            logIn(validator(password))
+            logIn(isPasswordValid)
           }}
         >
           <LabeledInput {...usernameInput} />
           <LabeledInput {...passwordInput} />
           <button
-            onClick={() => logIn(validator(password))}
-            className="bw0 bg-gray black pa2"
+            type="submit"
+            className={
+              isPasswordValid
+                ? 'bw0 pa2 bg-black white'
+                : 'bw0 pa2 bg-gray black'
+            }
           >
             log in
           </button>
+
+          <span className="pa2 gray sans-serif f7">
+            {password.length > 0 && !isPasswordValid
+              ? 'invaild password'
+              : password.length > 0 && isPasswordValid
+              ? 'vaild password'
+              : ''}
+          </span>
         </form>
       )}
     </div>

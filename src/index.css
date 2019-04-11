@@ -55,6 +55,9 @@ html {
 .bg-gray {
   background-color: #ccc;
 }
+.gray {
+  color: #ccc;
+}
 .black {
   color: #000;
 }
