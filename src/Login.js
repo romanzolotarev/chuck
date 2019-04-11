@@ -12,13 +12,13 @@ export const validator = password => {
   const allTriples = password.match(new RegExp(triples.join('|'), 'g'))
 
   const rules = [
-    allTriples && allTriples.length < 1,
-    allPairs && allPairs.length < 2,
-    password.length > 32,
-    password.match(/[^a-z]/g) !== null,
-    password.match(/[iOI]/g) !== null
+    allTriples && allTriples.length >= 1,
+    allPairs && allPairs.length >= 2,
+    password.length <= 32,
+    password.match(/[^a-z]/g) === null,
+    password.match(/[iOI]/g) === null
   ]
-  return rules.filter(x => x === false).length === rules.length
+  return rules.filter(Boolean).length === rules.length
 }
 
 export const Login = () => {
@@ -90,9 +90,7 @@ export const Login = () => {
           <span className="pa2 gray sans-serif f7">
             {password.length > 0 && !isPasswordValid
               ? 'invaild password'
-              : password.length > 0 && isPasswordValid
-              ? 'vaild password'
-              : ''}
+              : password.length > 0 && isPasswordValid && 'vaild password'}
           </span>
         </form>
       )}
