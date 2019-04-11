@@ -2,20 +2,29 @@ export const LIKE = 'LIKE'
 export const UNLIKE = 'UNLIKE'
 export const FETCH = 'FETCH'
 export const UPDATE_JOKES = 'UPDATE_JOKES'
+export const START_AUTO_FETCH = 'START_AUTO_FETCH'
+export const STOP_AUTO_FETCH = 'STOP_AUTO_FETCH'
 
-export const initialState = { jokes: [], favorites: [], shouldFetch: false }
+export const initialState = {
+  jokes: [],
+  favorites: [],
+  shouldFetch: false,
+  shouldAutoFetch: false
+}
 
 export const reducer = (state, [actionType, payload]) => {
   switch (actionType) {
     case LIKE: {
-      const joke = payload
+      const { joke, limit } = payload
       const jokes = state.jokes.map(x =>
         x.id === joke.id ? { ...x, favorite: true } : x
       )
 
       const favorites =
         state.favorites.find(x => x.id === joke.id) === undefined
-          ? [{ ...joke, favorite: true }].concat(state.favorites).slice(0, 10)
+          ? [{ ...joke, favorite: true }]
+              .concat(state.favorites)
+              .slice(0, limit)
           : state.favorites
       return { ...state, jokes, favorites }
     }
@@ -34,6 +43,12 @@ export const reducer = (state, [actionType, payload]) => {
 
     case FETCH:
       return { ...state, shouldFetch: true }
+
+    case START_AUTO_FETCH:
+      return { ...state, shouldAutoFetch: true }
+
+    case STOP_AUTO_FETCH:
+      return { ...state, shouldAutoFetch: false }
 
     default:
       return state
