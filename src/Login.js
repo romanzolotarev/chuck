@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 
 export const validator = password => {
   const alpha = 'abcdefghijklmnopqrstuvwxyz'.split('')
@@ -42,6 +42,15 @@ export const Login = () => {
   }
 
   const isPasswordValid = validator(password)
+
+  const storage = useRef(null)
+  useEffect(() => {
+    if (storage.current === null) {
+      storage.current = window.localStorage
+      logIn(JSON.parse(storage.current.getItem('loggedIn')))
+    }
+    storage.current.setItem('loggedIn', JSON.stringify(loggedIn))
+  }, [loggedIn])
 
   return (
     <div className="center mb4 w-100 mw6 mb3 mt3">
