@@ -152,10 +152,21 @@ const RandomJokes = () => {
 
 const FavoriteJokes = () => {
   const { state, dispatch, favoriteLimit } = useContext(StateDispatch)
+  const {
+    favorites: { length }
+  } = state
+  const header =
+    length === 1
+      ? 'favorite one'
+      : length === favoriteLimit
+      ? 'top ' + length + ' of favorites'
+      : length > 0
+      ? length + ' of favorites'
+      : 'favorite ones'
   return (
     <div className="w-50 fl">
       <div className="pl2">
-        <h2>top {favoriteLimit} of favorites</h2>
+        <h2>{header}</h2>
         <AutoFetchButtons />
         <div>
           {state.favorites.map(x => (
