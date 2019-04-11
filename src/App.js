@@ -36,7 +36,9 @@ export const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
   //
   useEffect(() => {
     if (state.shouldFetch)
-      fetchApi(url + randomLimit, x => dispatch([UPDATE_JOKES, x]))
+      fetchApi(url + randomLimit, payload =>
+        dispatch({ type: UPDATE_JOKES, payload })
+      )
   }, [url, state.shouldFetch, randomLimit])
 
   //
@@ -58,7 +60,7 @@ export const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
     //
     if (state.shouldAutoFetch) {
       const fetchOneJoke = ([joke]) =>
-        dispatch([LIKE, { joke, limit: favoriteLimit }])
+        dispatch({ type: LIKE, payload: { joke, limit: favoriteLimit } })
       fetchApi(url + '1', fetchOneJoke)
       autoFetchTimer.current = setInterval(() => {
         fetchApi(url + '1', fetchOneJoke)
@@ -72,7 +74,8 @@ export const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
   // Stop fetching when there are more than nine jokes.
   //
   useEffect(() => {
-    if (state.favorites.length >= favoriteLimit) dispatch([STOP_AUTO_FETCH])
+    if (state.favorites.length >= favoriteLimit)
+      dispatch({ type: STOP_AUTO_FETCH })
   }, [state.favorites])
 
   //
@@ -91,7 +94,7 @@ export const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
     // Get an item from localStorage
     const getItem = (key, type) => {
       const payload = JSON.parse(storage.current.getItem(key))
-      payload && dispatch([type, payload])
+      payload && dispatch({ type, payload })
     }
 
     if (storage.current === null) {
@@ -130,8 +133,8 @@ const RandomJokes = () => {
       <div>
         {state.jokes.map(x => {
           const action = x.favorite
-            ? [UNLIKE, x]
-            : [LIKE, { joke: x, limit: favoriteLimit }]
+            ? { type: UNLIKE, payload: x }
+            : { type: LIKE, payload: { joke: x, limit: favoriteLimit } }
           return (
             <div
               className="pa2 bg-white b--gray mb3 pointer"
@@ -170,7 +173,7 @@ const FavoriteJokes = () => {
           {state.favorites.map(x => (
             <div
               className="pa2 bg-white b--gray mb3 pointer"
-              onClick={() => dispatch([UNLIKE, x])}
+              onClick={() => dispatch({ type: UNLIKE, payload: x })}
               key={x.id}
             >
               {x.joke}
@@ -192,7 +195,7 @@ const FetchButton = () => {
         (state.shouldFetch ? 'bg-gray black' : 'bg-black white')
       }
       disabled={state.shouldFetch}
-      onClick={() => dispatch([FETCH])}
+      onClick={() => dispatch({ type: FETCH })}
     >
       fetch {randomLimit} jokes
     </button>
@@ -209,7 +212,7 @@ const AutoFetchButtons = () => {
           (state.shouldAutoFetch ? 'bg-gray black' : 'bg-black white')
         }
         disabled={state.shouldAutoFetch}
-        onClick={() => dispatch([START_AUTO_FETCH])}
+        onClick={() => dispatch({ type: START_AUTO_FETCH })}
       >
         fetch one every {Math.floor(autoFetchInterval / 1000)} seconds
       </button>
@@ -219,7 +222,7 @@ const AutoFetchButtons = () => {
           (!state.shouldAutoFetch ? 'bg-gray black' : 'bg-black white')
         }
         disabled={!state.shouldAutoFetch}
-        onClick={() => dispatch([STOP_AUTO_FETCH])}
+        onClick={() => dispatch({ type: STOP_AUTO_FETCH })}
       >
         stop
       </button>

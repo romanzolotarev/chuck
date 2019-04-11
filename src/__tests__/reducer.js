@@ -14,17 +14,19 @@ describe('reducer', () => {
   const joke = { id: 1, joke: 'a' }
 
   it('default', () => {
-    expect(reducer(initialState, [])).toEqual(initialState)
+    expect(reducer(initialState, {})).toEqual(initialState)
   })
 
   it('LIKE', () => {
     const state = { ...initialState, jokes: [joke] }
-    expect(reducer(state, [LIKE, { joke, limit: 1 }])).toEqual({
-      favorites: [{ id: 1, joke: 'a', favorite: true }],
-      jokes: [{ id: 1, joke: 'a', favorite: true }],
-      shouldFetch: false,
-      shouldAutoFetch: false
-    })
+    expect(reducer(state, { type: LIKE, payload: { joke, limit: 1 } })).toEqual(
+      {
+        favorites: [{ id: 1, joke: 'a', favorite: true }],
+        jokes: [{ id: 1, joke: 'a', favorite: true }],
+        shouldFetch: false,
+        shouldAutoFetch: false
+      }
+    )
   })
 
   it('LIKE keeps jokes under limit', () => {
@@ -33,20 +35,22 @@ describe('reducer', () => {
       { id: 3, joke: 'c', favorite: true }
     ]
     const state = { ...initialState, jokes: [joke], favorites }
-    expect(reducer(state, [LIKE, { joke, limit: 2 }])).toEqual({
-      favorites: [
-        { id: 1, joke: 'a', favorite: true },
-        { id: 2, joke: 'b', favorite: true }
-      ],
-      jokes: [{ id: 1, joke: 'a', favorite: true }],
-      shouldFetch: false,
-      shouldAutoFetch: false
-    })
+    expect(reducer(state, { type: LIKE, payload: { joke, limit: 2 } })).toEqual(
+      {
+        favorites: [
+          { id: 1, joke: 'a', favorite: true },
+          { id: 2, joke: 'b', favorite: true }
+        ],
+        jokes: [{ id: 1, joke: 'a', favorite: true }],
+        shouldFetch: false,
+        shouldAutoFetch: false
+      }
+    )
   })
 
   it('UNLIKE', () => {
     const state = { ...initialState, jokes: [joke] }
-    expect(reducer(state, [UNLIKE, joke])).toEqual({
+    expect(reducer(state, { type: UNLIKE, payload: joke })).toEqual({
       favorites: [],
       jokes: [{ id: 1, joke: 'a', favorite: false }],
       shouldFetch: false,
@@ -55,7 +59,7 @@ describe('reducer', () => {
   })
 
   it('FETCH', () => {
-    expect(reducer(initialState, [FETCH])).toEqual({
+    expect(reducer(initialState, { type: FETCH })).toEqual({
       favorites: [],
       jokes: [],
       shouldFetch: true,
@@ -64,7 +68,9 @@ describe('reducer', () => {
   })
 
   it('UPDATE_JOKES', () => {
-    expect(reducer(initialState, [UPDATE_JOKES, [joke]])).toEqual({
+    expect(
+      reducer(initialState, { type: UPDATE_JOKES, payload: [joke] })
+    ).toEqual({
       favorites: [],
       jokes: [{ id: 1, joke: 'a' }],
       shouldFetch: false,
@@ -77,7 +83,9 @@ describe('reducer', () => {
       { id: 2, joke: 'b', favorite: true },
       { id: 3, joke: 'c', favorite: true }
     ]
-    expect(reducer(initialState, [UPDATE_FAVORITES, favorites])).toEqual({
+    expect(
+      reducer(initialState, { type: UPDATE_FAVORITES, payload: favorites })
+    ).toEqual({
       favorites,
       jokes: [],
       shouldFetch: false,
@@ -86,7 +94,7 @@ describe('reducer', () => {
   })
 
   it('START_AUTO_FETCH', () => {
-    expect(reducer(initialState, [START_AUTO_FETCH])).toEqual({
+    expect(reducer(initialState, { type: START_AUTO_FETCH })).toEqual({
       favorites: [],
       jokes: [],
       shouldFetch: false,
@@ -95,7 +103,7 @@ describe('reducer', () => {
   })
 
   it('STOP_AUTO_FETCH', () => {
-    expect(reducer(initialState, [STOP_AUTO_FETCH])).toEqual({
+    expect(reducer(initialState, { type: STOP_AUTO_FETCH })).toEqual({
       favorites: [],
       jokes: [],
       shouldFetch: false,

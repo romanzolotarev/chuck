@@ -13,8 +13,8 @@ export const initialState = {
   shouldAutoFetch: false
 }
 
-export const reducer = (state, [actionType, payload]) => {
-  switch (actionType) {
+export const reducer = (state, { type, payload }) => {
+  switch (type) {
     case LIKE: {
       const { joke, limit } = payload
       const jokes = state.jokes.map(x =>
