@@ -1,5 +1,12 @@
 import { render } from 'react-dom'
-import React, { useEffect, useReducer, useRef } from 'react'
+import React, {
+  useEffect,
+  useReducer,
+  useRef,
+  createContext,
+  useContext,
+  useMemo
+} from 'react'
 import {
   reducer,
   FETCH,
@@ -17,6 +24,8 @@ const fetchApi = async (url, cb) => {
   if (json.value === undefined) return
   cb(json.value)
 }
+
+const StateDispatch = createContext([])
 
 const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -66,6 +75,30 @@ const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
     if (state.favorites.length >= favoriteLimit) dispatch([STOP_AUTO_FETCH])
   }, [state.favorites])
 
+  const value = useMemo(
+    () => ({
+      state,
+      dispatch,
+      randomLimit,
+      favoriteLimit,
+      autoFetchInterval
+    }),
+    [state, dispatch, randomLimit, favoriteLimit, autoFetchInterval]
+  )
+  return (
+    <>
+      <StateDispatch.Provider value={value}>
+        <RandomJokes />
+        <FavoriteJokes />
+      </StateDispatch.Provider>
+    </>
+  )
+}
+
+const RandomJokes = () => {
+  const { state, dispatch, randomLimit, favoriteLimit } = useContext(
+    StateDispatch
+  )
   return (
     <>
       <h2>random jokes</h2>
@@ -84,6 +117,16 @@ const App = ({ url, autoFetchInterval, randomLimit, favoriteLimit }) => {
           )
         })}
       </div>
+    </>
+  )
+}
+
+const FavoriteJokes = () => {
+  const { state, dispatch, favoriteLimit, autoFetchInterval } = useContext(
+    StateDispatch
+  )
+  return (
+    <>
       <h2>top {favoriteLimit} of favorites</h2>
       <button
         disabled={state.shouldAutoFetch}
