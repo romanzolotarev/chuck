@@ -8,7 +8,7 @@ import {
   STOP_AUTO_FETCH,
   UPDATE_JOKES,
   UPDATE_FAVORITES
-} from '../reducer.js'
+} from '../reducer'
 
 describe('reducer', () => {
   const joke = { id: 1, joke: 'a' }

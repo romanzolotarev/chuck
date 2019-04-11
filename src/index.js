@@ -1,7 +1,7 @@
 import { render } from 'react-dom'
 import React from 'react'
-import { Login } from './Login.js'
-import { App } from './App.js'
+import { Login } from './Login'
+import { App } from './App'
 import './index.css'
 
 render(

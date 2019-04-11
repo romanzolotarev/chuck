@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
 
-export const validator = (username, password) => {
-  return username && password
+export const validator = password => {
+  const rules = [
+    password.length > 32,
+    password.toLowerCase() !== password,
+    password.match(/[iOI]/g) !== null
+  ]
+  return rules.filter(x => x === false).length === rules.length
 }
 
 export const Login = () => {
@@ -41,13 +46,13 @@ export const Login = () => {
         <form
           onSubmit={e => {
             e.preventDefault()
-            logIn(validator(username, password))
+            logIn(validator(password))
           }}
         >
           <LabeledInput {...usernameInput} />
           <LabeledInput {...passwordInput} />
           <button
-            onClick={() => logIn(validator(username, password))}
+            onClick={() => logIn(validator(password))}
             className="bw0 bg-gray black pa2"
           >
             log in
