@@ -52,6 +52,9 @@ html {
 .bg-black {
   background-color: #000;
 }
+.bg-gray {
+  background-color: #ccc;
+}
 .black {
   color: #000;
 }
@@ -63,6 +66,9 @@ html {
 }
 .b--gray {
   border: solid 1px #888;
+}
+.mt3 {
+  margin-top: 1rem;
 }
 .mb3 {
   margin-bottom: 1rem;
