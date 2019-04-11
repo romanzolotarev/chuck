@@ -1,5 +1,9 @@
 import React, { useState } from 'react'
 
+export const validator = (username, password) => {
+  return username && password
+}
+
 export const Login = () => {
   const [loggedIn, logIn] = useState(false)
   const [username, setUsername] = useState('')
@@ -22,17 +26,33 @@ export const Login = () => {
   return (
     <div className="center mb4 w-100 mw6 mb3 mt3">
       {loggedIn ? (
-        <button onClick={() => logIn(false)} className="bw0 bg-gray black pa2">
-          log out
-        </button>
-      ) : (
         <>
-          <LabeledInput {...usernameInput} />
-          <LabeledInput {...passwordInput} />
-          <button onClick={() => logIn(true)} className="bw0 bg-gray black pa2">
-            log in
+          <p>
+            You have logged in as <span class="b">{username}</span>
+          </p>
+          <button
+            onClick={() => logIn(false)}
+            className="bw0 bg-gray black pa2"
+          >
+            log out
           </button>
         </>
+      ) : (
+        <form
+          onSubmit={e => {
+            e.preventDefault()
+            logIn(validator(username, password))
+          }}
+        >
+          <LabeledInput {...usernameInput} />
+          <LabeledInput {...passwordInput} />
+          <button
+            onClick={() => logIn(validator(username, password))}
+            className="bw0 bg-gray black pa2"
+          >
+            log in
+          </button>
+        </form>
       )}
     </div>
   )
