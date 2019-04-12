@@ -70,6 +70,9 @@ html {
 .b--gray {
   border: solid 1px #888;
 }
+.mt2 {
+  margin-top: 0.5rem;
+}
 .mt3 {
   margin-top: 1rem;
 }
