@@ -1,5 +1,4 @@
 import { swapNodes, label, form, input, span, div, button } from './dom.js'
-
 import { validator } from '../src/validator.js'
 
 const SET_PASSWORD = 'SET_PASSWORD'
@@ -13,17 +12,61 @@ const initialState = {
   loggedIn: false
 }
 
+//
+// The app
+//
+
 export const Login = () => {
+  const _state = { current: null }
   const node = { current: document.getElementById('Login') }
+  const storage = { current: null }
 
-  const state = initialState
+  const reducer = (state, { type, payload }) => {
+    switch (type) {
+      case SET_PASSWORD: {
+        return { ...state, password: payload }
+      }
+      case SET_USERNAME: {
+        return { ...state, username: payload }
+      }
+      case LOG_IN: {
+        return { ...state, loggedIn: true }
+      }
+      case LOG_OUT: {
+        return { ...state, loggedIn: false }
+      }
+      default:
+        return state
+    }
+  }
 
-  const dispatch = action => state
+  const dispatch = action => {
+    if (_state.current === null) _state.current = { ...initialState }
+    const state = reducer(_state.current, action)
+    // console.log(_state.current, action, state)
+    _state.current = state
 
-  //
-  // Render
-  //
-  node.current = swapNodes(Root({ state, dispatch }), node.current)
+    //
+    // Store loggedIn in localStorage
+    //
+    if (storage.current === null) {
+      storage.current = window.localStorage
+      const type = JSON.parse(storage.current.getItem('loggedIn'))
+        ? LOG_IN
+        : LOG_OUT
+      dispatch({ type })
+      return state
+    }
+    storage.current.setItem('loggedIn', JSON.stringify(state.loggedIn))
+
+    //
+    // Render
+    //
+    node.current = swapNodes(Root({ state, dispatch }), node.current)
+    return state
+  }
+
+  dispatch({})
 }
 
 //

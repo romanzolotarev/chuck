@@ -1,96 +1,126 @@
 import { swapNodes, div, h2, button } from './dom.js'
 import {
+  reducer,
   FETCH,
   UNLIKE,
   LIKE,
+  UPDATE_JOKES,
+  UPDATE_FAVORITES,
   STOP_AUTO_FETCH,
-  START_AUTO_FETCH
+  START_AUTO_FETCH,
+  initialState
 } from '../src/reducer.js'
 
-const initialState = {
-  shouldFetch: false,
-  shouldAutoFetch: false,
-  favorites: [
-    {
-      id: 226,
-      joke:
-        "&quot;Brokeback Mountain&quot; is not just a movie. It's also what Chuck Norris calls the pile of dead ninjas in his front yard.",
-      favorite: true
-    },
-    {
-      id: 166,
-      joke: "Chuck Norris doesn't play god. Playing is for children.",
-      favorite: true
-    },
-    {
-      id: 539,
-      joke:
-        "Chuck Norris's database has only one table, 'Kick', which he DROPs frequently.",
-      favorite: true
-    },
-    {
-      id: 162,
-      joke: 'Once you go Norris, you are physically unable to go back.',
-      favorite: true
-    },
-    {
-      id: 346,
-      joke:
-        'Every time Chuck Norris smiles, someone dies. Unless he smiles while he?s roundhouse kicking someone in the face. Then two people die.',
-      favorite: true
-    },
-    {
-      id: 461,
-      joke: 'Chuck Norris finished World of Warcraft.',
-      favorite: true
-    },
-    {
-      id: 415,
-      joke: 'When Chuck Norris wants an egg, he cracks open a chicken.',
-      favorite: true
-    }
-  ],
+//
+// Fetch API
+//
 
-  jokes: [
-    {
-      id: 74,
-      joke:
-        "In honor of Chuck Norris, all McDonald's in Texas have an even larger size than the super-size. When ordering, just ask to be Chucksized.",
-      categories: []
-    },
-    {
-      id: 42,
-      joke:
-        "Chuck Norris doesn't churn butter. He roundhouse kicks the cows and the butter comes straight out.",
-      categories: []
-    },
-    {
-      id: 351,
-      joke:
-        'In a tagteam match, Chuck Norris was teamed with Hulk Hogan against King Kong Bundy and Andre The Giant. He pinned all 3 at the same time.',
-      categories: []
-    }
-  ]
+const fetchApi = async (url, cb) => {
+  const response = await fetch(url)
+  const json = await response.json()
+  if (json.value === undefined) return
+  cb(json.value)
 }
 
-export default initialState
+//
+// The app
+//
 
 export const App = ({ url, randomLimit, favoriteLimit, autoFetchInterval }) => {
   const node = { current: document.getElementById('App') }
+  const autoFetchTimer = { current: null }
+  const _state = { current: null }
+  const storage = { current: null }
 
-  const state = {
-    ...initialState,
-    randomLimit,
-    favoriteLimit,
-    autoFetchInterval
+  const dispatch = action => {
+    if (_state.current === null)
+      _state.current = {
+        ...initialState,
+        randomLimit,
+        favoriteLimit,
+        autoFetchInterval
+      }
+
+    const state = reducer(_state.current, action)
+    //
+    // console.log(_state.current, action, state)
+    //
+    _state.current = state
+
+    //
+    // Fetch jokes
+    //
+    if (state.shouldFetch)
+      fetchApi(url + randomLimit, payload =>
+        dispatch({ type: UPDATE_JOKES, payload })
+      )
+
+    //
+    // Auto fetch
+    //
+    if (autoFetchTimer.current !== null && !state.shouldAutoFetch) {
+      clearInterval(autoFetchTimer.current)
+      autoFetchTimer.current = null
+    }
+    if (autoFetchTimer.current === null && state.shouldAutoFetch) {
+      const fetchOneJoke = ([joke]) =>
+        dispatch({ type: LIKE, payload: { joke, limit: state.favoriteLimit } })
+      fetchApi(url + '1', fetchOneJoke)
+      autoFetchTimer.current = setInterval(() => {
+        fetchApi(url + '1', fetchOneJoke)
+      }, autoFetchInterval)
+    }
+    if (
+      state.favorites.length >= state.favoriteLimit &&
+      autoFetchTimer.current !== null
+    ) {
+      return dispatch({ type: STOP_AUTO_FETCH })
+    }
+
+    //
+    // Keep jokes and favorites in localStorage
+    //
+    const setItem = (key, json) => {
+      const value = JSON.stringify(json)
+      value && storage.current.setItem(key, value)
+    }
+    //
+    // Dispatch multiple actions one after the other
+    //
+    const reduceActions = (state, actions) =>
+      actions.reduce((acc, x) => dispatch(x), state)
+    const getItems = items => {
+      reduceActions(
+        state,
+        items.map(([key, type]) => {
+          const payload = JSON.parse(storage.current.getItem(key))
+          return payload ? { type, payload } : {}
+        })
+      )
+    }
+    if (storage.current === null) {
+      //
+      // Read from localStorage
+      //
+      storage.current = window.localStorage
+      getItems([['favorites', UPDATE_FAVORITES], ['jokes', UPDATE_JOKES]])
+      return state
+    } else {
+      //
+      // Write to localStorage
+      //
+      setItem('favorites', state.favorites)
+      setItem('jokes', state.jokes)
+    }
+
+    //
+    // Render
+    //
+    node.current = swapNodes(Root({ state, dispatch }), node.current)
+    return state
   }
 
-  const dispatch = action => state
-
-  //
-  // Render
-  //
-  node.current = swapNodes(Root({ state, dispatch }), node.current)
+  dispatch({})
 }
 
 //
