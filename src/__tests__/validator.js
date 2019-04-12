@@ -1,4 +1,4 @@
-import { validator } from '../Login'
+import { validator } from '../validator'
 
 describe('password', () => {
   //
