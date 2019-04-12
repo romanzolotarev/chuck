@@ -3,7 +3,13 @@
 
 # Chuck
 
-This is a [React] app, written in ES6, HTML, and vanilla CSS
+This repository contains two implementations for the same app: one is
+powered by React and another has been written in [vanilla
+JavaScript](#vanilla) (a naive implementation in **5KB** gzipped).
+
+## React
+
+[React] app, written in ES6, HTML, and vanilla CSS
 ([Tachyons]' naming convention).
 
 The app fetches jokes and let you like/unlike them. The state survives
@@ -12,7 +18,7 @@ a password.
 
 **[Demo](https://www.youtube-nocookie.com/embed/aPosqjMGcTg?controls=0)**
 
-## Dependencies
+### Dependencies
 
     production:
       react 16.8.6, react-dom 16.8.6
@@ -20,13 +26,13 @@ a password.
     developement:
       node 8+, react-scripts 2+
 
-## Files
+### Files
 
     ./src/index.js    the entry point
     ./src/__tests__   tests
     ./public          static HTML file
 
-## Usage
+### Usage
 
 Build this react app
 
@@ -36,6 +42,46 @@ Build this react app
     npm install
     npm start
 
+
+## Vanilla
+
+This is a naive implementation for `<App />` and `<Login />` components
+(no virtutal DOM, no patching, just run swapNodes() to replace whole DOM
+node).
+
+### Known issues
+
+- `<App />` and `<Login />` mounted into two different `<div />s`.
+- Every `dispatcher(action)` call leads to re-render of its `<div />`.
+- For `<Login />` that means `<input />` looses its focus onChange.
+
+### Dependencies
+
+    production:
+      ECMAScript 2017 (ECMA-262)
+
+    developement:
+      node 8+
+
+### Files
+
+    ./vanilla/index.html    the entry point
+
+    Shared with the React app:
+      ./src/index.css      CSS
+      ./src/reducer.js     reducer for <App />
+      ./src/validator.js   password validator for <Login />
+
+### Usage
+
+Run an HTTP server and open <http://localhost:1337> in a browser:
+
+    cd /tmp
+    git clone https://github.com/romanzolotarev/chuck
+    cd chuck
+    npm run vanilla
+
+
 ## Uninstall
 
     cd /tmp
@@ -43,9 +89,9 @@ Build this react app
 
 ## DIY
 
-This app has been written with zero boilerplates. If you want to try it
-yourself to write it from scratch create new React app and checkout my
-initial commit.
+This app has been written with almost zero boilerplates. If you want to
+try it yourself to write it from scratch create new React app and
+checkout my initial commit.
 
 
 	echo '{
