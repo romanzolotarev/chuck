@@ -1,4 +1,7 @@
+import { Login } from './Login.js'
 import { App } from './App.js'
+
+Login({})
 
 App({
   url: 'https://api.icndb.com/jokes/random/',
